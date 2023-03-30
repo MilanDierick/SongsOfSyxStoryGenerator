@@ -1,14 +1,17 @@
 import time
 import uuid
-import openai
 from flask import Flask, render_template, request, redirect, url_for, Response
-from src.database import EmbeddingDatabase
-from src.embedding import Embedding
-from src.model import Model
+from database import EmbeddingDatabase
+from embedding import Embedding
+from model import Model
 
 app = Flask(__name__)
 
-gpt_model = Model(api_key="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")
+# read the api key from a file
+with open('api_key.txt', 'r') as f:
+    key = f.read()
+
+gpt_model = Model(api_key=key)
 database = EmbeddingDatabase()
 
 
