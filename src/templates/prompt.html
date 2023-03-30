@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Prompt</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Flask App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('upload_text') }}">Upload Text</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('display_embeddings') }}">View Embeddings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('prompt') }}">Prompt</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="mt-5">GPT-3 Prompt</h1>
+    <form onsubmit="event.preventDefault(); streamResponse()">
+        <div class="mb-3">
+            <label for="prompt" class="form-label">Enter your prompt</label>
+            <textarea class="form-control" id="prompt" name="prompt" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {% if response %}
+        <div class="mt-4">
+            <h3>Response:</h3>
+            <pre>{{ response }}</pre>
+        </div>
+    {% endif %}
+    <div class="mt-4" id="response-container" style="display: none;">
+        <h3>Response:</h3>
+        <pre id="response"></pre>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script>
+    function streamResponse() {
+        var promptText = document.getElementById("prompt").value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/stream_response", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.onprogress = function () {
+            document.getElementById("response-container").style.display = "block";
+            document.getElementById("response").innerHTML = xhr.responseText;
+            console.log(xhr.responseText)
+        };
+        xhr.send("prompt=" + encodeURIComponent(promptText));
+    }
+</script>
+</body>
+</html>
