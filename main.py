@@ -9,8 +9,7 @@ app = Flask(__name__)
 
 # read the api key from a file
 with open('api_key.txt', 'r') as f:
-    key = f.read()
-    key.strip()
+    key = f.read().strip()
 
 gpt_model = Model(api_key=key)
 database = EmbeddingDatabase()
