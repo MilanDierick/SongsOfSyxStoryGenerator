@@ -1,6 +1,6 @@
 import time
 import uuid
-from flask import Flask, render_template, request, redirect, url_for, Response
+from flask import Flask, render_template, request, redirect, url_for, Response, make_response
 from database import EmbeddingDatabase
 from embedding import Embedding
 from model import Model
@@ -70,6 +70,8 @@ def stream_response():
                     yield dictionary['content']
             time.sleep(0.1)
 
+    response = make_response(Response(generate(), content_type='text/html'))
+    response.headers['X-Accel-Buffering'] = 'no'
     return Response(generate(), content_type='text/html')
 
 
